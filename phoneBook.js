@@ -1,56 +1,48 @@
 'use strict';
 
-var phoneBook; // Здесь вы храните записи как хотите
+var phoneBook;
 var phoneBook = [];
 
-/*
-   Функция добавления записи в телефонную книгу.
-   На вход может прийти что угодно, будьте осторожны.
-*/
+function deleteChar(text, charDelete) {
+    var simpleTextMassiv = [];
+    var simpleTextMassiv = text.split(charDelete);
+    var textDeleteChar = '';
+    for (var i = 0; i < simpleTextMassiv.length; i++) {
+        textDeleteChar += simpleTextMassiv[i];
+    }
+    return textDeleteChar;
+}
 
-function checkNomber(nomber) {
-    var nomderNotSpaseMassiv = nomber.split(' ');
+function correctionNumber(number) {
+    number = number || '';
+    var numberNotSpaseMassiv = number.split(' ');
     var numberNotSpace = '';
-    for (i = 0; i < nomderNotSpaseMassiv.length; i++) {
-        numberNotSpace += nomderNotSpaseMassiv[i];
+    for (var i = 0; i < numberNotSpaseMassiv.length; i++) {
+        numberNotSpace += numberNotSpaseMassiv[i];
     }
-    var regexpNomber = /^[+]?[0-9](?:(?:[(]{1}[0-9]+[)]{1})|(?:[0-9]))[0-9-]*/i;
-    var numberNomer = regexpNomber.exec(numberNotSpace);
-    if (numberNomer == null) {
-        numberNomer = '';
+    var regexpNumber = /^[+]?[0-9](?:(?:[(]{1}[0-9]+[)]{1})|(?:[0-9]))[0-9-]*/i;
+    var numberNumber = regexpNumber.exec(numberNotSpace);
+    if (numberNumber == null) {
+        return false;
     } else {
-        numberNomer = numberNomer[0];
+        numberNumber = numberNumber[0];
     }
-    if (numberNomer === numberNotSpace) {
+    if (numberNumber === numberNotSpace) {
         var flagPlus = 0;
-        if (numberNomer[0] == '+') {
+        if (numberNumber[0] == '+') {
             flagPlus = 1;
         }
         if (flagPlus == 1) {
-            numberNomer = numberNomer.slice(1);
+            numberNumber = numberNumber.slice(1);
         }
-        var nomderNotBktMassiv = numberNomer.split('(');
-        numberNomer = '';
-        for (i = 0; i < nomderNotBktMassiv.length; i++) {
-            numberNomer += nomderNotBktMassiv[i];
-        }
-        nomderNotBktMassiv = [];
-        nomderNotBktMassiv = numberNomer.split(')');
-        numberNomer = '';
-        for (i = 0; i < nomderNotBktMassiv.length; i++) {
-            numberNomer += nomderNotBktMassiv[i];
-        }
-        nomderNotBktMassiv = [];
-        nomderNotBktMassiv = numberNomer.split('-');
-        numberNomer = '';
-        for (i = 0; i < nomderNotBktMassiv.length; i++) {
-            numberNomer += nomderNotBktMassiv[i];
-        }
-        if (numberNomer.length == 10 || numberNomer.length == 11 || numberNomer.length == 12) {
+        numberNumber = deleteChar(numberNumber, ')');
+        numberNumber = deleteChar(numberNumber, '(');
+        numberNumber = deleteChar(numberNumber, '-');
+        if (numberNumber.length == 10 || numberNumber.length == 11 || numberNumber.length == 12) {
             if (flagPlus == 1) {
-                numberNomer = '+' + numberNomer;
+                numberNumber = '+' + numberNumber;
             }
-            return numberNomer;
+            return numberNumber;
         } else {
             return false;
         }
@@ -59,92 +51,65 @@ function checkNomber(nomber) {
     }
 }
 
-function checkEmail(email) {
+function correctionEmail(email) {
+    email = email || '';
     var emailNotSpaseMassiv = email.split(' ');
     var emailNotSpace = '';
-    for (i = 0; i < emailNotSpaseMassiv.length; i++) {
+    for (var i = 0; i < emailNotSpaseMassiv.length; i++) {
         emailNotSpace += emailNotSpaseMassiv[i];
     }
     var regexpEmail = /^[-_A-zА-я0-9]+@{1}[-_A-zА-я0-9]+(?:[.]{1}[-_A-zА-я0-9]+)+/i;
     var emailPost = regexpEmail.exec(emailNotSpace);
     if (emailPost == null) {
-        emailPost = '';
-    } else {
-        emailPost = emailPost[0];
-    }
-    if (emailPost != '') {
-        return emailPost;
-    } else {
         return false;
+    } else {
+        return emailPost[0];
     }
 }
 
-function checkName(name) {
-    var nameName = name.trim();
-    return nameName;
+function printNumber(number) {
+    var phone = '+';
+    var simpleNumber = '';
+    if (number[0] != '+') {
+        simpleNumber = number;
+    } else {
+        simpleNumber = number.slice(1);
+    }
+    phone += simpleNumber.slice(0, 1) + ' (' + simpleNumber.slice(1, 4) + ') ' +
+        simpleNumber.slice(4, 7) + '-' + simpleNumber.slice(7, 9) + '-' +
+        simpleNumber.slice(9);
+    return phone;
 }
 
-function contact(nameContact, numberContact, emailContact) {
+function Contact(nameContact, numberContact, emailContact) {
     this.nameContact = nameContact;
     this.numberContact = numberContact;
     this.emailContact = emailContact;
-    this.printNumber = function printNumber() {
-        var telefon = '+';
-        var simpleNomer = '';
-        if (this.numberContact[0] != '+') {
-            simpleNomer = this.numberContact;
-        } else {
-            simpleNomer = this.numberContact.slice(1);
-        }
-        telefon += simpleNomer.slice(0, 1) + ' (' + simpleNomer.slice(1, 4) + ') ' +
-            simpleNomer.slice(4, 7) + '-' + simpleNomer.slice(7, 9) + '-' +
-            simpleNomer.slice(9);
-        return telefon;
-    };
-    this.printContact = function printContact() {
-        var infoContact = [];
-        infoContact.push(this.nameContact);
-        infoContact.push(this.printNumber());
-        infoContact.push(this.emailContact);
-        return infoContact;
-    };
-    this.infoContact = function infoContact() {
-        var infoContact = [];
-        infoContact.push(this.nameContact);
-        infoContact.push(this.numberContact);
-        infoContact.push(this.emailContact);
-        return infoContact;
-    };
 }
 
-
 module.exports.add = function add(name, phone, email) {
-    var nameFinish = checkName(name);
-    var numberFinish = checkNomber(phone);
-    var emailFinish = checkEmail(email);
+    var nameFinish = name.trim();
+    var numberFinish = correctionNumber(phone);
+    var emailFinish = correctionEmail(email);
     if (numberFinish != false && emailFinish != false) {
-        var contactNew = new contact(nameFinish, numberFinish, emailFinish);
+        var contactNew = new Contact(nameFinish, numberFinish, emailFinish);
         phoneBook.push(contactNew);
     } else {
         return false;
     }
-}; // Ваша невероятная магия здесь
+};
 
-
-/*
-   Функция поиска записи в телефонную книгу.
-   Поиск ведется по всем полям.
-*/
 module.exports.find = function find(query) {
     if (query === undefined) {
         query = '';
     }
     var baseAnswer = [];
-    for (i = 0; i < phoneBook.length; i++) {
-        var contact = phoneBook[i];
-        var contactPrint = contact.printContact();
-        contact = contact.infoContact();
-        for (j = 0; j < contact.length; j++) {
+    for (var i = 0; i < phoneBook.length; i++) {
+        var contactPrint = [phoneBook[i].nameContact,printNumber(phoneBook[i].numberContact),
+            phoneBook[i].emailContact];
+        var contact = [phoneBook[i].nameContact,phoneBook[i].numberContact,
+            phoneBook[i].emailContact];
+        for (var j = 0; j < contact.length; j++) {
             var parametr = contact[j];
             if (parametr.indexOf(query) != -1) {
                 baseAnswer.push(contactPrint);
@@ -164,19 +129,15 @@ module.exports.find = function find(query) {
         }
         console.log(info);
     }
-    // Ваша удивительная магия здесь
 };
 
-/*
-   Функция удаления записи в телефонной книге.
-*/
 module.exports.remove = function remove(query) {
     var baseAnswer = [];
-    for (i = 0; i < phoneBook.length; i++) {
-        var contact = phoneBook[i];
-        contact = contact.infoContact();
+    for (var i = 0; i < phoneBook.length; i++) {
+        var contact = [phoneBook[i].nameContact,phoneBook[i].numberContact,
+            phoneBook[i].emailContact];
         var index = i;
-        for (j = 0; j < contact.length; j++) {
+        for (var j = 0; j < contact.length; j++) {
             var parametr = contact[j];
             if (parametr.indexOf(query) != -1) {
                 baseAnswer.push(index);
@@ -189,7 +150,6 @@ module.exports.remove = function remove(query) {
         phoneBook.splice(baseAnswer[i] - kolDelete, 1);
         kolDelete ++;
     }
-    // Ваша необьяснимая магия здесь
 };
 
 function makeSpase(number, text) {
@@ -199,39 +159,28 @@ function makeSpase(number, text) {
     }
     return textNull;
 }
-/*
-   Функция импорта записей из файла (задача со звёздочкой!).
-*/
+
 module.exports.importFromCsv = function importFromCsv(filename) {
     var data = require('fs').readFileSync(filename, 'utf-8');
-    //var fs = require('fs');
-    //var text = fs.readFileSync(filename, 'utf8');
-    //var textLine = text.split("\n");
     var textLine = data.split('\n');
     for (var ii = 0; ii < textLine.length; ii++) {
         var textInfoContact = textLine[ii].split(';');
         var name = textInfoContact[0];
         var tel = textInfoContact[1];
         var email = textInfoContact[2];
-        add(name, tel, email);
+        module.exports.add(name, tel, email);
     }
-    // Ваша чёрная магия:
-    // - Разбираете записи из `data`
-    // - Добавляете каждую запись в книгу
 };
 
-/*
-   Функция вывода всех телефонов в виде ASCII (задача со звёздочкой!).
-*/
 module.exports.showTable = function showTable() {
     var maxLengthName = 0;
     var maxLengthNumber = 0;
     var maxLengtheMail = 0;
     var query = '';
     var baseAnswer = [];
-    for (i = 0; i < phoneBook.length; i++) {
-        var contact = phoneBook[i];
-        var contactPrint = contact.printContact();
+    for (var i = 0; i < phoneBook.length; i++) {
+        var contactPrint = [phoneBook[i].nameContact,printNumber(phoneBook[i].numberContact),
+            phoneBook[i].emailContact];
         baseAnswer.push(contactPrint);
         var parametrName = contactPrint[0];
         var parametrNumber = contactPrint[1];
@@ -260,7 +209,7 @@ module.exports.showTable = function showTable() {
     for (i = 0; i < baseAnswer.length; i++) {
         info = '|';
         var infoContact = baseAnswer[i];
-        for (j = 0; j < infoContact.length; j++) {
+        for (var j = 0; j < infoContact.length; j++) {
             var textSpase = makeSpase(maxSize[j] - infoContact[j].length, ' ');
             info += infoContact[j] + textSpase + '|';
         }
@@ -269,5 +218,4 @@ module.exports.showTable = function showTable() {
     info = '|' + makeSpase(maxLengthName, '_') + '|' + makeSpase(maxLengthNumber, '_') + '|' +
         makeSpase(maxLengtheMail, '_') + '|';
     console.log(info);
-    // Ваша чёрная магия здесь
 };
